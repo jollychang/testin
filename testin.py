@@ -16,8 +16,12 @@ def get_dispatch_list():
                 'timestamp':timestamp}
     r = requests.post(mcfg_url, data = json.dumps(payload))
     if r.status_code == requests.codes.ok:
-        return r.text
+        return r.json()
+
+def get_internal_url():
+    dispatch = get_dispatch_list()['data']['dispatches'][0]
+    return "http://%s:%s" % (dispatch['externalIp'], dispatch['externalPort'])
 
 
 if __name__ == '__main__':
-    print get_dispatch_list()
+    print get_dispatch_list(), get_internal_url()

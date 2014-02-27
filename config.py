@@ -1,7 +1,8 @@
 mcfg_url= "http://sd.testin.cn/mcfg/mcfg.action"
 apikey=""
 secret_key=""
-
+email=""
+password=""
 try:
     from local_config import *
 except ImportError, e:
