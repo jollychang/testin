@@ -39,6 +39,7 @@ def get_sid():
     return login()['data']['sid']
 
 def get_devices():
+    #暂时只能拿到三个机型
     url = "%s/deviceunit/cfg.action" % get_external_url()
     payload = {'op':'Model.getSpecimens',
                 'apikey':apikey,
@@ -51,7 +52,42 @@ def get_devices():
     if r.status_code == requests.codes.ok:
         return r.json()                
 
+def submit_test():
+    url = "%s/realtest/nativeapp.action" % get_external_url()
+    payload = {'op':'App.add',
+                'apikey':apikey,
+                'timestamp':timestamp,
+                'sid':get_sid(),
+                'syspfId':'1',
+                'testType':'0',
+                'secrecy':0,
+                'cloud':'adapt.testin',
+                'prodId':'10004',
+                'models':[{'modelId':'11',}],
+                'packageUrl':'http://andariel.douban.com/d/com.douban.shuo'
+                    }
+    logging.info(payload)
+    r = requests.post(url, data = json.dumps(payload))
+    if r.status_code == requests.codes.ok:
+        logging.debug(r.json())
+        if r.json()['code'] == 0:
+            return r.json()['data']['result']          
+
+def get_result():
+    adaptId = submit_test()
+    url = "%s/realtest/nativeapp.action" % get_external_url()
+    payload = {'op':'Report.overview',
+                'apikey':apikey,
+                'timestamp':timestamp,
+                'sid':get_sid(),
+                'adaptId':adaptId,}
+    logging.info(payload)
+    r = requests.post(url, data = json.dumps(payload))
+    if r.status_code == requests.codes.ok:
+        return r.json()
 
 
 
 if __name__ == '__main__':
+    # print get_devices()
+    print get_result()
