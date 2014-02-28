@@ -14,9 +14,9 @@ def get_dispatch_list():
                 'secret_key':secret_key,
                 'op':'Dispatch.list',
                 'timestamp':timestamp}
-    r = requests.post(mcfg_url, data = json.dumps(payload))
-    if r.status_code == requests.codes.ok:
-        return r.json()
+    result = requests.post(mcfg_url, data = json.dumps(payload))
+    if result.status_code == requests.codes.ok:
+        return result.json()
 
 def get_external_url():
     dispatch = get_dispatch_list()['data']['dispatches'][0]
@@ -58,11 +58,11 @@ def submit_test():
                 'apikey':apikey,
                 'timestamp':timestamp,
                 'sid':get_sid(),
-                'syspfId':'1',
-                'testType':'0',
+                'syspfId':1,
+                'testType':0,
                 'secrecy':0,
                 'cloud':'adapt.testin',
-                'prodId':'10004',
+                'prodId':10004,
                 'models':[{'modelId':'11',}],
                 'packageUrl':'http://andariel.douban.com/d/com.douban.shuo'
                     }
@@ -71,7 +71,7 @@ def submit_test():
     if r.status_code == requests.codes.ok:
         logging.debug(r.json())
         if r.json()['code'] == 0:
-            return r.json()['data']['result']          
+            return str(r.json()['data']['result'])
 
 def get_result():
     adaptId = submit_test()
